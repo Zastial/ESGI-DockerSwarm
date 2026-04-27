@@ -16,11 +16,19 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+# La VM que j'utilise est en ARM64, donc je build pour cette architecture.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
+          platforms: linux/amd64, linux/arm64
           tags: |
             zastial/docker-swarm:latest
             zastial/docker-swarm:${{ github.sha }}
