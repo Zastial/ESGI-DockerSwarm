@@ -1,4 +1,4 @@
-name: Build and Push
+name: Swarm CI/CD
 
 on:
   push:
@@ -24,3 +24,22 @@ jobs:
           tags: |
             zastial/docker-swarm:latest
             zastial/docker-swarm:${{ github.sha }}
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SWARM_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan ${{ secrets.SWARM_IP }} >> ~/.ssh/known_hosts
+
+      - name: Create Docker context
+        run: |
+          docker context create swarm \
+            --docker "host=ssh://devopsci@${{ secrets.SWARM_IP }}"
+          docker context use swarm
+
+      - name: Deploy to Swarm
+        run: |
+          docker service update \
+            --image zastial/docker-swarm:${{ github.sha }} \
+            docker-swarm-api

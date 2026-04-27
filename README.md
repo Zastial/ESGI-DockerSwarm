@@ -59,3 +59,15 @@ Avec **0.0.0.0**, on écoute sur toutes les interfaces réseau du conteneur, y c
     ```
     Permet de vérifier les variables d'environnement, les ports exposés, etc...
 
+# Partie C — Registry d’images
+
+## Questions
+
+### Quelle stratégie de tags adoptez-vous : latest, SHA, semver ?
+
+On tag chaque image avec latest pour la commodité et avec le SHA Git pour garantir que chaque déploiement est traçable et reproductible jusqu'au commit exact.
+
+### Pourquoi un tag immuable est préférable pour un déploiement fiable ?
+
+Un tag immuable garantit que l'image déployée est exactement celle qui a été testée et validée.
+
