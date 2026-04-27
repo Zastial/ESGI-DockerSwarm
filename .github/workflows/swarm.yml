@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-# La VM que j'utilise est en ARM64, donc je build pour cette architecture.
+      # La VM que j'utilise est en ARM64, donc je build pour cette architecture.
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -33,6 +33,12 @@ jobs:
             zastial/docker-swarm:latest
             zastial/docker-swarm:${{ github.sha }}
 
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
@@ -48,6 +54,13 @@ jobs:
 
       - name: Deploy to Swarm
         run: |
-          docker service update \
-            --image zastial/docker-swarm:${{ github.sha }} \
-            docker-swarm-api
+          docker stack deploy \
+            -c docker-compose.yml \
+            --with-registry-auth \
+            docker-swarm
+
+      - name: Check deployment
+        run: |
+          sleep 15
+          docker stack services docker-swarm
+          docker stack ps docker-swarm

@@ -132,3 +132,13 @@ Si la clé SSH est compromise → accès au manager
 
 C'est le manager qui initie la connexion vers l'extérieur, aucun port n'est exposé sur le manager.
 La CI ne peut pas push quoi que ce soit.
+
+# Partie E — Déploiement Swarm
+
+## Questions
+
+### Comment Swarm gère-t-il un rolling update ?
+Swarm remplace les replicas un par un. Pour chaque replica, il démarre le nouveau, attend que le healthcheck passe, puis tue l'ancien. Les autres replicas continuent à servir le trafic pendant ce temps.
+
+### Que se passe-t-il si le healthcheck échoue pendant l’update ?
+Si le healthcheck échoue, Swarm considère le nouveau conteneur défaillant. Il arrête le processus de mise à jour, laisse les anciens conteneurs en place et affiche une erreur. L'application reste donc disponible même avec une erreur.
