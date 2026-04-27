@@ -55,7 +55,7 @@ jobs:
       - name: Deploy to Swarm
         run: |
           docker stack deploy \
-            -c docker-compose.yml \
+            -c docker-stack.yml \
             --with-registry-auth \
             docker-swarm
 
