@@ -142,3 +142,13 @@ Swarm remplace les replicas un par un. Pour chaque replica, il démarre le nouve
 
 ### Que se passe-t-il si le healthcheck échoue pendant l’update ?
 Si le healthcheck échoue, Swarm considère le nouveau conteneur défaillant. Il arrête le processus de mise à jour, laisse les anciens conteneurs en place et affiche une erreur. L'application reste donc disponible même avec une erreur.
+
+# Partie F — GitHub Actions CI/CD
+
+## Questions
+
+### Comment éviter d’afficher des secrets dans les logs ?
+Par défaut, GitHub Actions masque automatiquement les valeurs des secrets.* dans les logs.
+
+### Comment valider automatiquement que le service est “UP” après deploy (smoke test) ?
+L'idée est d'attendre que le service soit réellement Running avant de valider. Ensuite, on peut check l'état du service avec `docker service ps` ou faire une requête HTTP vers /health.
