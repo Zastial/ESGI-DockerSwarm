@@ -2,6 +2,58 @@
 
 Author: Alexandre CAROL
 
+# Projet
+
+## Architecture
+
+- Une API Node.js expose deux endpoints: `GET /` pour le hostname du conteneur et `GET /health` pour les probes.
+- L'application écoute sur `0.0.0.0` afin d'être joignable depuis l'extérieur du conteneur.
+- Le port est configurable via la variable d'environnement `PORT`.
+- Le déploiement cible Docker Swarm avec un accès distant au manager via SSH depuis la CI.
+- Flux simplifié: CI/CD -> manager Swarm -> service Docker -> API Node.js.
+
+## Installation
+
+DEV LOCAL (sans Docker) :
+```
+npm install && npm run start
+```
+
+DEV DOCKER :
+```
+docker swarm init
+
+docker stack deploy \           
+    -c docker-stack.yml \
+    --with-registry-auth \
+    docker-swarm
+```
+
+Vérifier l'accès: `curl http://<host>:<port>/` et `curl http://<host>:<port>/health`.
+
+## Choix techniques et justifications
+
+- **Express**: simple, léger, suffisant pour exposer deux routes HTTP.
+- **Morgan pour les logs HTTP**: solution simple pour obtenir une observabilité minimale sans ajouter de code de logging complexe.
+- SSH pour la CI: Plus simple à mettre en place que TLS pour Docker, et permet de limiter les risques en cas de compromission de la clé.
+
+## Risques / sécurité
+
+- Exposer Docker en TCP sans TLS est dangereux car cela donne un accès root à la machine. C'est pourquoi j'ai choisi une approche SSH pour la CI.
+
+- L'utilisation de secrets GitHub pour stocker la clé SSH dédiée à la CI permet de limiter les risques en cas de compromission.
+
+- Une solution plus sécurisée serait d'utiliser watchtower ou un webhook inversé pour éviter d'exposer un port sur le manager.
+
+## Preuve de fonctionnement
+
+Capture d'écran de `docker stack ps` montrant les services en cours d'exécution dans Swarm, confirmant que l'application est déployée et fonctionnelle.
+![dockerstackps](assets/dockerstackps.png)
+
+Capture d'écran de l'application déployée sur ma VM.
+![dockerstackdeploy](assets/dockerstackdeploy.png)
+PS: Si on recharge la page plusieurs fois, on voit que le hostname change.
+
 # Partie A — API Node.js
 
 ## Questions
