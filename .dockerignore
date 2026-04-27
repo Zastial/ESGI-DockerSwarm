@@ -1,0 +1,17 @@
+# Dépendances
+node_modules/
+
+# Git et IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Fichiers de build locaux
+dist/
+build/
+*.log
+
+# Secrets
+.env
+.env.local

@@ -1,0 +1,26 @@
+{
+  "name": "container-hostname-api",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "node test.js",
+    "dev": "PORT=3000 node app.js"
+  },
+  "keywords": [
+    "docker",
+    "hostname",
+    "health-check"
+  ],
+  "author": "",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "assert": "^2.1.0",
+    "supertest": "^7.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
